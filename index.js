@@ -1,50 +1,63 @@
-// import users from ".users.js"
-// import { getCurrentMonth } from "./date/index.js" //indxe.js обовязково дописувати
+import moviesService from "./movies/index.js";
+import yargs from "yargs";
+import { program } from "commander";
 
-// import fs from "fs"; // стара версія яка працює з колбеками
+const invokeAction = async ({ action, id, title, director }) => {
+	switch (action) {
+		case "list":
+			const allMovies = await moviesService.getAllMovies();
+			return console.log(allMovies);
 
-// import fs from "fs/promises";
+		case "getById":
+			const oneMovie = await moviesService.getMovieById(id);
+			return console.log(oneMovie);
+		case "add":
+			const newMovie = await moviesService.addMovie({ title, director });
+			return console.log(newMovie);
 
-// fs.readFile("./files/file.txt")
-// 	.then((data) => console.log(data))
-//     .catch((error) => console.log(error.message));
+		case "updateMovieById":
+			const updateMovie = await moviesService.updateMovieById({
+				id,
+				title,
+				director,
+			});
+			return console.log(updateMovie);
 
-// const func = async () => {
-// 	const filePath = "./files/file.txt";
-// 	const data = await fs.readFile(filePath);
-// 	console.log(data); //буфер 16річне представлення
-// };
+		case "deleteMovieByID":
+			const deleteMovie = await moviesService.deleteMovieByID(id);
+			return deleteMovie;
+		default:
+			console.log("Unknown action");
+	}
+};
 
-// const func = async () => {
-// 	const filePath = "./files/file.txt";
-// 	const buffer = await fs.readFile(filePath);
-// 	const text = buffer.toString();
-// 	console.log(text);
-// };
+// invokeAction({ action: "list" });
+// invokeAction({ action: "getById", id: "3" });
+// invokeAction({ action: "add", title: "avata water", director: "cameron" });
+// invokeAction({
+// 	action: "updateMovieById",
+// 	id: "3",
+// 	title: "avatar",
+// 	director: "cameron",
+// });
+// invokeAction({ action: "deleteMovieByID", id: "2" });
 
-// const func = async () => {
-// 	const filePath = "./files/file.txt";
-// 	const text = await fs.readFile(filePath, "utf-8"); //другий аргумент кодування в яке перевести
-// 	console.log(text);
-// };
+// const actionIndex = process.argv.indexOf("--action");
+// if (actionIndex !== -1) {
+// 	const action = process.argv[actionIndex + 1];
+// 	invokeAction({ action });;
+// }
 
-// додати нове
-// const func = async () => {
-// 	const filePath = "./files/file.txt";
-// 	const result = await fs.appendFile(filePath, "\ntest test"); //якщо файла нема він створиться
-// 	console.log(result);
-// };
+// const { argv } = yargs(process.argv.splice(2));
+// invokeAction(argv);
 
-// перезапис файлу
-// const func = async () => {
-// 	const filePath = "./files/file.txt";
-// 	await fs.writeFile(filePath, "\ntest test"); //якщо файла нема він створиться
-// 	console.log(result);
-// };
+program
+	.option("-a, --action <type>")
+	.option("-i, --id <type>")
+	.option("-t, --title <type>")
+	.option("-d, --director <type>");
 
-// const func = async () => {
-// 	const filePath = "./files/file.txt";
-// 	await fs.unlink(filePath); //видалити
-// };
+program.parse();
 
-// func();
+const options = program.opts();
+invokeAction(options);
