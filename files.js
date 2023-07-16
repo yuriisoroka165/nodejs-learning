@@ -4,12 +4,10 @@ const chalk = require("chalk");
 
 const dataValidator = require("./helpers/dataValidator");
 const checkExtension = require("./helpers/checkExtension");
-const { writeFile } = require("fs");
 
 const createFile = async (fileName, content) => {
 	const file = { fileName, content };
 	const result = dataValidator(file);
-	// console.log(result.error.details);
 	if (result.error) {
 		const { details } = result.error;
 		console.log(
@@ -35,4 +33,43 @@ const createFile = async (fileName, content) => {
 	}
 };
 
-module.exports = { createFile };
+const getFiles = async () => {
+	const filesPath = path.join(__dirname, "files");
+	try {
+		const result = await fs.readdir(filesPath);
+		if (result.length === 0) {
+			console.log(chalk.red(`The directory has not files`));
+			return;
+		}
+	} catch (error) {}
+};
+
+const getInfo = async (fileName) => {
+	const filePath = path.join(__dirname, "files");
+	try {
+		const result = await fs.readdir(filePath);
+		if (!result.includes(fileName)) {
+			console.log(chalk.red(`File ${fileName} not found`));
+			return;
+		}
+		const currentFileData = await fs.readFile(
+			path.join(__dirname, "files", fileName),
+			"utf-8"
+		);
+		const extension = path.extname(fileName);
+		const name = path.basename(
+			path.join(__dirname, "files", fileName),
+			extension
+		);
+		console.log({
+			name,
+			extension: extension.slice(1),
+			content: currentFileData,
+		});
+		return { name, extension: extension.slice(1), content: currentFileData };
+	} catch (error) {
+		console.log(error);
+	}
+};
+
+module.exports = { createFile, getFiles, getInfo };
