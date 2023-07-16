@@ -66,7 +66,11 @@ const getInfo = async (fileName) => {
 			extension: extension.slice(1),
 			content: currentFileData,
 		});
-		return { name, extension: extension.slice(1), content: currentFileData };
+		return {
+			name,
+			extension: extension.slice(1),
+			content: currentFileData,
+		};
 	} catch (error) {
 		console.log(error);
 	}
