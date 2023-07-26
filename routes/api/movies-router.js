@@ -1,8 +1,8 @@
 import express from "express";
-import Joi from "joi";
+
 
 import moviesControllers from "../../controllers/movies-controllers.js";
-import { validateBody } from "../../decorators/validateBody.js";
+import { validateBody } from "../../decorators/index.js";
 import moviesAddSchema from "../../schemas/movies-chemas.js";
 
 const moviesRouter = express.Router();

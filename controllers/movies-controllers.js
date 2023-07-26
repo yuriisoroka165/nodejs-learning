@@ -1,14 +1,13 @@
-import { ctrlWrapper } from "../decorators";
+import Joi from "joi";
+
+import { ctrlWrapper } from "../decorators/index.js";
+import { HttpError } from "../helpers/index.js";
 
 import moviesService from "../movies/index.js";
 
 const getAll = async (req, res) => {
-	try {
-		const result = await moviesService.getAllMovies();
-		res.json(result);
-	} catch (error) {
-		next(error);
-	}
+	const result = await moviesService.getAllMovies();
+	res.json(result);
 };
 
 const getById = async (req, res, next) => {
