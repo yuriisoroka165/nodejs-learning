@@ -2,7 +2,7 @@ import fs from "fs/promises";
 import path from "path";
 import { nanoid } from "nanoid";
 
-const moviesPath = path.resolve("models", "movies", "movies.json"); //обєднує в один шлях і нормалізує його відносно операційної системи //зробити абсолютнгий шлях
+const moviesPath = path.resolve("movies", "movies.json"); //обєднує в один шлях і нормалізує його відносно операційної системи //зробити абсолютнгий шлях
 // console.log(moviesPath); // шлях відпершоджерела
 // console.log(path.join("movies", "movies.json")); //join просто обєднує шляхи
 // __dirname це common js застаріле в ES6 модулях її немає
@@ -33,10 +33,9 @@ export const addMovie = async ({ title, director }) => {
 	return newMovie;
 };
 
-export const updateMovieById = async ({ id, title, director }) => {
+export const updateMovieById = async (id, {title, director}) => {
 	const movies = await getAllMovies();
 	const index = movies.findIndex((item) => item.id === id);
-	console.log(id);
 	if (index === -1) {
 		return null;
 	} else {
