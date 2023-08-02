@@ -2,11 +2,11 @@ import fs from "fs/promises";
 import path from "path";
 
 import { ctrlWrapper } from "../decorators/index.js";
-import { HttpError } from "../helpers/index.js";
+import { HttpError, cloudinary } from "../helpers/index.js";
 
 import Movie from "../models/movie.js";
 
-const posterPath = path.resolve("public", "posters");
+// const posterPath = path.resolve("public", "posters");
 
 const getAll = async (req, res) => {
 	// const result = await Movie.find({}, "-createdAt -updatedAt"); взяти все без цих полів
@@ -33,10 +33,17 @@ const getById = async (req, res) => {
 const add = async (req, res) => {
 	const { _id: owner } = req.user;
 	const { path: oldPath, filename } = req.file;
-	const newPath = path.join(posterPath, filename);
-	await fs.rename(oldPath, newPath);
-	const poster = path.join("posters", filename);
+	// const newPath = path.join(posterPath, filename);
+	// await fs.rename(oldPath, newPath);
+	// const poster = path.join("posters", filename);
+	const { path: filePath } = req.file;
+	const { url: poster } = await cloudinary.uploader.upload(filePath, {
+		//витягуємо властивість uri  і перейменуємо на poster
+		folder: "posters",
+	});
+	// const poster = fileData.url;
 	const result = await Movie.create({ ...req.body, poster, owner });
+	await fs.unlink(filePath); //видалити з папки темп
 	res.status(201).json(result);
 };
 
